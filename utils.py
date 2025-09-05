@@ -1,66 +1,31 @@
-# =========================
-# utils.py
-# Modul Konversi Suhu
-# =========================
-
-def cf(c):
-    """Celsius ke Fahrenheit"""
-    return (c * 9/5) + 32
-
-def ck(c):
-    """Celsius ke Kelvin"""
-    return c + 273.15
-
-def fc(f):
-    """Fahrenheit ke Celsius"""
-    return (f - 32) * 5/9
-
-def fk(f):
-    """Fahrenheit ke Kelvin"""
-    return (f - 32) * 5/9 + 273.15
-
-def kc(k):
-    """Kelvin ke Celsius"""
-    return k - 273.15
-
-def kf(k):
-    """Kelvin ke Fahrenheit"""
-    return (k - 273.15) * 9/5 + 32
-
 def konversi_suhu(nilai, dari, ke):
-    """
-    Fungsi utama untuk konversi suhu.
-    nilai: angka suhu
-    dari : satuan asal ('c', 'f', 'k')
-    ke   : satuan tujuan ('c', 'f', 'k')
-    """
-    dari = dari.lower()
-    ke = ke.lower()
+    dari = dari.upper()
+    ke = ke.upper()
 
-    # Validasi satuan input
-    if dari not in ["c", "f", "k"] or ke not in ["c", "f", "k"]:
-        return "Error: Satuan tidak valid! Gunakan 'C', 'F', atau 'K'."
+    # Validasi satuan
+    if dari not in ["C", "F", "K"] or ke not in ["C", "F", "K"]:
+        raise ValueError("Satuan tidak valid. Gunakan C, F, atau K.")
 
-    # Validasi nilai suhu (Kelvin tidak boleh negatif)
-    if dari == "k" and nilai < 0:
-        return "Error: Suhu Kelvin tidak boleh negatif!"
+    # Validasi nilai suhu
+    if dari == "K" and nilai < 0:
+        raise ValueError("Nilai Kelvin tidak boleh negatif.")
 
-    # Jika sama, langsung kembalikan
+    # Jika satuan asal dan tujuan sama
     if dari == ke:
-        return nilai
+        return round(nilai, 1)
 
-    # fungsi konversi
-    konversi = {
-        ("c", "f"): cf,
-        ("c", "k"): ck,
-        ("f", "c"): fc,
-        ("f", "k"): fk,
-        ("k", "c"): kc,
-        ("k", "f"): kf,
-    }
+    # Konversi ke Celsius dulu
+    if dari == "C":
+        celsius = nilai
+    elif dari == "F":
+        celsius = (nilai - 32) * 5 / 9
+    elif dari == "K":
+        celsius = nilai - 273.15
 
-    fungsi = konversi.get((dari, ke))
-    if fungsi:
-        return fungsi(nilai)
-    else:
-        return "Error: Konversi tidak tersedia."
+    # Konversi dari Celsius ke satuan tujuan
+    if ke == "C":
+        return round(celsius, 1)
+    elif ke == "F":
+        return round((celsius * 9 / 5) + 32, 1)
+    elif ke == "K":
+        return round(celsius + 273.15, 1)
